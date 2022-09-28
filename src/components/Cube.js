@@ -1,0 +1,81 @@
+import { useBox } from "@react-three/cannon";
+import { useState } from "react";
+import useStore from "../hooks/useStore";
+import * as textures from "../images/textures";
+
+const Cube = ({ position, texture }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const [ref] = useBox(() => ({
+    type: "Static",
+    position,
+  }));
+  const [addCube, removeCube] = useStore((state) => [
+    state.addCube,
+    state.removeCube,
+  ]);
+
+  const activeTexture = textures[texture + "Texture"];
+
+  // A cube has 6 faces, but each face has 2 triangles, and each triangles counts as a face
+  // so a cube actually has 12 faces
+  const handleClick = (e) => {
+    e.stopPropagation();
+    const clickedFace = Math.floor(e.faceIndex / 2);
+    const { x, y, z } = ref.current.position;
+    if (e.shiftKey) {
+      removeCube(x, y, z);
+      return;
+    }
+    if (clickedFace === 0) {
+      addCube(x + 1, y, z);
+      return;
+    }
+    if (clickedFace === 1) {
+      addCube(x - 1, y, z);
+      return;
+    }
+    if (clickedFace === 2) {
+      addCube(x, y + 1, z);
+      return;
+    }
+    if (clickedFace === 3) {
+      addCube(x, y - 1, z);
+      return;
+    }
+    if (clickedFace === 4) {
+      addCube(x, y, z + 1);
+      return;
+    }
+    if (clickedFace === 5) {
+      addCube(x, y, z - 1);
+      return;
+    }
+  };
+
+  return (
+    <mesh
+      scale={1}
+      ref={ref}
+      onClick={handleClick}
+      onPointerMove={(e) => {
+        e.stopPropagation();
+        setIsHovered(true);
+      }}
+      onPointerOut={(e) => {
+        e.stopPropagation();
+        setIsHovered(false);
+      }}
+    >
+      <boxBufferGeometry attach="geometry" />
+      <meshStandardMaterial
+        color={isHovered ? "grey" : "white"}
+        map={activeTexture}
+        transparent={true}
+        opacity={texture === "glass" ? 0.7 : 1}
+        attach="material"
+      />
+    </mesh>
+  );
+};
+
+export default Cube;
