@@ -1,5 +1,8 @@
 # Minecraft Clone
 
+![image](https://user-images.githubusercontent.com/86891437/192690962-e627ec09-c25a-4ad9-a6c4-f976c6b51ce8.png)
+
+
 How to play:
 - WASD keys to move
 - 1,2,3,4,5,6 to select textures
